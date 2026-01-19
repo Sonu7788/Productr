@@ -24,40 +24,33 @@ router.post('/register', async (req, res) => {
 
 // @route   POST /api/auth/send-otp
 router.post("/send-otp", async (req, res) => {
-  console.log("SEND OTP HIT", req.body);
-
   const { email } = req.body;
 
   try {
     const user = await User.findOne({ email });
-    console.log("USER FOUND:", user);
-
     if (!user) {
       return res.status(404).json({ msg: "User not found" });
     }
 
-    const otp = "123456"; // HARD-CODE for test
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
     user.otp = otp;
     user.otpExpires = new Date(Date.now() + 10 * 60 * 1000);
-
-    console.log("BEFORE SAVE");
     await user.save();
-    console.log("AFTER SAVE");
 
-    return res.json({
+    console.log("OTP for", email, ":", otp);
+
+    
+    res.json({
       msg: "OTP generated",
-      otp,
+      otp
     });
 
   } catch (err) {
-    console.error("OTP ERROR FULL:", err);
-    return res.status(500).json({
-      msg: "Error generating OTP",
-      error: err.message,
-    });
+    console.error(err);
+    res.status(500).json({ msg: "Error generating OTP" });
   }
 });
-
 
 
 // @route   POST /api/auth/verify-otp

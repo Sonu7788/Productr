@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Register from "./Register.jsx";
 import { useNavigate } from "react-router-dom";
 import API from "../api";
 import frontLogo from "../assets/frontlogo.png";
