@@ -23,46 +23,42 @@ router.post('/register', async (req, res) => {
 });
 
 // @route   POST /api/auth/send-otp
-router.post('/send-otp', async (req, res) => {
+router.post("/send-otp", async (req, res) => {
+  console.log("SEND OTP HIT", req.body);
+
   const { email } = req.body;
+
   try {
     const user = await User.findOne({ email });
-    if (!user) return res.status(404).json({ msg: 'User not found' });
+    console.log("USER FOUND:", user);
 
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
 
+    const otp = "123456"; // HARD-CODE for test
     user.otp = otp;
-    user.otpExpires = otpExpires;
-    await user.save();
+    user.otpExpires = new Date(Date.now() + 10 * 60 * 1000);
 
-    // --- BREVO CONFIGURATION ---
-    const transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_SERVICE, // smtp-relay.brevo.com
-      port: 587,
-      secure: false, 
-      auth: {
-        user: process.env.EMAIL_USER, // Your registered email
-        pass: process.env.EMAIL_PASS  // Your xsmtpsib key
-      }
+    console.log("BEFORE SAVE");
+    await user.save();
+    console.log("AFTER SAVE");
+
+    return res.json({
+      msg: "OTP generated",
+      otp,
     });
 
-    const mailOptions = {
-      from: `"Shopytr" <sonujangir992002@gmail.com>`, // Uses the email from .env
-      to: email,
-      subject: 'Your Verification Code',
-      text: `Hello ${user.name},\n\nYour OTP is: ${otp}\n\nIt will expire in 10 minutes.`,
-    };
-
-    const info = await transporter.sendMail(mailOptions);
-    console.log("Brevo email sent successfully!");
-    res.json({ msg: 'OTP sent successfully' });
-
   } catch (err) {
-    console.error("ERROR SENDING MAIL:", err.message);
-    res.status(500).json({ msg: 'Error sending OTP', details: err.message });
+    console.error("OTP ERROR FULL:", err);
+    return res.status(500).json({
+      msg: "Error generating OTP",
+      error: err.message,
+    });
   }
 });
+
+
 
 // @route   POST /api/auth/verify-otp
 router.post('/verify-otp', async (req, res) => {
