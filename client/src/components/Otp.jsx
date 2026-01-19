@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import API from "../api";
 
 const Otp = () => {
   const [otp, setOtp] = useState("");
@@ -14,37 +14,31 @@ const Otp = () => {
   const handleVerify = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(
-        "http://localhost:5000/api/auth/verify-otp",
-        { email, otp }
-      );
+      const res = await API.post("/auth/verify-otp", { email, otp });
       login(res.data.user, res.data.token);
       navigate("/dashboard");
     } catch (err) {
       alert(err.response?.data?.msg || "Invalid OTP");
+      console.error(err);
     }
   };
 
   return (
     <div className="h-screen w-full grid grid-cols-1 md:grid-cols-2 bg-white">
 
-      {/* ================= LEFT SIDE (SAME AS LOGIN) ================= */}
+      {/* LEFT SIDE */}
       <div className="relative w-full h-full overflow-hidden">
-
-        {/* Background */}
         <img
           src="/src/assets/frontlogo.png"
           alt="Background"
           className="absolute inset-0 w-full h-full object-cover"
         />
 
-        {/* Brand */}
         <div className="absolute top-6 left-6 flex items-center gap-2 z-20">
           <span className="text-xl font-bold text-indigo-900">Productr</span>
           <span className="w-2 h-2 bg-orange-400 rounded-full"></span>
         </div>
 
-        {/* Center Card */}
         <div className="relative z-10 flex items-center justify-center h-full">
           <div className="w-[260px] h-[360px] rounded-3xl overflow-hidden shadow-2xl">
             <img
@@ -59,17 +53,16 @@ const Otp = () => {
         </div>
       </div>
 
-      {/* ================= RIGHT SIDE (OTP FORM) ================= */}
+      {/* RIGHT SIDE */}
       <div className="w-full h-full flex items-center justify-center px-10 bg-white">
         <div className="w-full max-w-md">
 
           <h2 className="text-2xl font-bold text-indigo-900 mb-4">
-           Login to Productr Account
+            Login to Productr Account
           </h2>
 
           <p className="text-sm text-gray-600 mb-8">
-            Enter otp <br />
-            
+            Enter OTP sent to your email
           </p>
 
           <form onSubmit={handleVerify} className="space-y-6">
@@ -94,7 +87,6 @@ const Otp = () => {
             </button>
           </form>
 
-          {/* Resend */}
           <div className="mt-10 text-center border border-dashed rounded-lg py-4">
             <span className="text-sm text-gray-600">
               Didn’t receive OTP?

@@ -1,20 +1,28 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import API from "../api";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
 
   const handleSendOtp = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.post("http://localhost:5000/api/auth/send-otp", { email });
-      navigate("/otp", { state: { email } });
-    } catch (err) {
-      alert("Error sending OTP");
-    }
-  };
+  e.preventDefault();
+  try {
+    const res = await API.post("/auth/send-otp", { email });
+
+    // save email for OTP verify page
+    localStorage.setItem("otpEmail", email);
+
+    
+    alert(`Your OTP is: ${res.data.otp}`);
+
+    navigate("/otp");
+  } catch (err) {
+    alert(err.response?.data?.msg || "Error generating OTP");
+  }
+};
+
 
   return (
     <div className="h-screen w-full grid grid-cols-1 md:grid-cols-2 bg-white">

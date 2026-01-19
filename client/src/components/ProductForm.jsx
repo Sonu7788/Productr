@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import API from "../api";
 
 const ProductForm = ({ setTab, editData }) => {
   const [formData, setFormData] = useState({
@@ -22,9 +22,12 @@ const ProductForm = ({ setTab, editData }) => {
         ...editData,
         exchangeOrReturn: editData.exchangeOrReturn ? "Yes" : "No",
       });
+
       if (editData.imageUrls) {
         setPreviews(
-          editData.imageUrls.map(img => `http://localhost:5000${img}`)
+          editData.imageUrls.map(
+            img => `${import.meta.env.VITE_API_URL}${img}`
+          )
         );
       }
     }
@@ -62,22 +65,19 @@ const ProductForm = ({ setTab, editData }) => {
 
     try {
       if (editData) {
-        await axios.put(
-          `http://localhost:5000/api/products/${editData._id}`,
-          data
-        );
+        await API.put(`/products/${editData._id}`, data);
       } else {
-        await axios.post("http://localhost:5000/api/products", data);
+        await API.post("/products", data);
       }
       setTab("home");
     } catch (err) {
+      console.error(err);
       alert("Error saving product");
     }
   };
 
   return (
     <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
-
       <div className="w-full max-w-sm bg-white rounded-xl shadow-xl max-h-[90vh] flex flex-col">
 
         {/* HEADER */}
@@ -93,7 +93,7 @@ const ProductForm = ({ setTab, editData }) => {
           </button>
         </div>
 
-        {/* FORM BODY */}
+        {/* FORM */}
         <form
           onSubmit={handleSubmit}
           className="px-6 py-5 space-y-4 overflow-y-auto"
@@ -175,7 +175,6 @@ const ProductForm = ({ setTab, editData }) => {
               multiple
               onChange={handleImageChange}
               id="images"
-              name="image"
               className="hidden"
               accept="image/*"
             />
@@ -220,7 +219,6 @@ const ProductForm = ({ setTab, editData }) => {
             </select>
           </div>
 
-          {/* FOOTER */}
           <div className="pt-4 border-t sticky bottom-0 bg-white flex justify-end">
             <button
               type="submit"

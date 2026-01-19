@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import API from '../api';
 
 const Home = ({ setTab }) => {
   const [products, setProducts] = useState([]);
@@ -8,7 +8,7 @@ const Home = ({ setTab }) => {
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/products');
+      const res = await API.get('/products');
       setProducts(res.data);
     } catch (err) {
       console.error(err);
@@ -23,13 +23,13 @@ const Home = ({ setTab }) => {
 
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure?')) return;
-    await axios.delete(`http://localhost:5000/api/products/${id}`);
+    await API.delete(`/products/${id}`);
     fetchProducts();
   };
 
   const togglePublish = async (id, status) => {
     try {
-      await axios.put(`http://localhost:5000/api/products/${id}`, {
+      await API.put(`/products/${id}`, {
         published: !status
       });
       fetchProducts();
@@ -79,10 +79,10 @@ const Home = ({ setTab }) => {
         {filteredProducts.map(product => (
           <div key={product._id} className="bg-white rounded-xl border shadow-sm overflow-hidden">
 
-            <div className="h-48 bg-gray-100 relative">
+            <div className="h-48 bg-gray-100">
               {product.imageUrl ? (
                 <img
-                  src={`http://localhost:5000${product.imageUrl}`}
+                  src={`${import.meta.env.VITE_API_URL}${product.imageUrl}`}
                   alt={product.name}
                   className="w-full h-full object-cover"
                 />
@@ -94,18 +94,16 @@ const Home = ({ setTab }) => {
             </div>
 
             <div className="p-5">
-              <div className="flex justify-between items-start mb-2">
+              <div className="flex justify-between mb-2">
                 <span className="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded">
                   {product.type}
                 </span>
                 <span className="text-xs text-gray-400">{product.brand}</span>
               </div>
 
-              <h3 className="text-lg font-bold text-gray-900 truncate">
-                {product.name}
-              </h3>
+              <h3 className="text-lg font-bold truncate">{product.name}</h3>
 
-              <div className="flex justify-between items-end mt-4">
+              <div className="flex justify-between mt-4">
                 <div>
                   <p className="text-xs text-gray-500">Stock</p>
                   <p className="font-medium">{product.stock}</p>
@@ -120,7 +118,7 @@ const Home = ({ setTab }) => {
                 <button
                   onClick={() => togglePublish(product._id, product.published)}
                   className={`flex-1 py-2 rounded-lg text-sm font-medium text-white
-                    ${product.published ? 'bg-green-500 hover:bg-green-600' : 'bg-blue-600 hover:bg-blue-700'}`}
+                    ${product.published ? 'bg-green-500' : 'bg-blue-600'}`}
                 >
                   {product.published ? 'Unpublish' : 'Publish'}
                 </button>
@@ -134,7 +132,7 @@ const Home = ({ setTab }) => {
 
                 <button
                   onClick={() => handleDelete(product._id)}
-                  className="w-10 h-10 flex items-center justify-center border rounded-lg text-gray-500 hover:text-red-600"
+                  className="w-10 h-10 border rounded-lg text-gray-500 hover:text-red-600"
                 >
                   🗑
                 </button>
