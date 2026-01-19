@@ -101,12 +101,13 @@ const Login = () => {
             <p className="text-sm text-gray-600">
               Don't have a Productr Account?
             </p>
-            <a
-              href="/register"
-              className="text-indigo-600 font-semibold text-sm"
-            >
-              SignUp Here
-            </a>
+            <button
+  type="button"
+  onClick={() => navigate("/register")}
+  className="text-indigo-600 font-semibold text-sm"
+>
+  SignUp Here
+</button>
           </div>
 
         </div>
