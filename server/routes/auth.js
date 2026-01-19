@@ -56,11 +56,19 @@ router.post("/send-otp", async (req, res) => {
 // @route   POST /api/auth/verify-otp
 router.post('/verify-otp', async (req, res) => {
   const { email, otp } = req.body;
-  try {
-    
 
-    if (user.otp !== otp || user.otpExpires < Date.now()) {
-      return res.status(400).json({ msg: 'Invalid or expired OTP' });
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+
+    if (!user.otp || user.otp !== otp) {
+      return res.status(400).json({ msg: "Invalid OTP" });
+    }
+
+    if (user.otpExpires < Date.now()) {
+      return res.status(400).json({ msg: "OTP expired" });
     }
 
     user.otp = undefined;
@@ -68,13 +76,29 @@ router.post('/verify-otp', async (req, res) => {
     await user.save();
 
     const payload = { user: { id: user.id } };
-    jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '5h' }, (err, token) => {
-      if (err) throw err;
-      res.json({ token, user: { id: user._id, name: user.name, email: user.email } });
-    });
+
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      { expiresIn: "5h" },
+      (err, token) => {
+        if (err) throw err;
+        res.json({
+          token,
+          user: {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+          },
+        });
+      }
+    );
+
   } catch (err) {
-    res.status(500).send('Server Error');
+    console.error(err);
+    res.status(500).send("Server Error");
   }
 });
+
 
 module.exports = router;

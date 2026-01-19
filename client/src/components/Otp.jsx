@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import API from "../api";
+import frontLogo from "../assets/frontlogo.png";
+import backLogo from "../assets/backlogo.png";
 
 const Otp = () => {
   const [otp, setOtp] = useState("");
@@ -9,7 +11,8 @@ const Otp = () => {
   const location = useLocation();
   const { login } = useAuth();
 
-  const email = location.state?.email;
+  const email = location.state?.email || localStorage.getItem("otpEmail");
+
 
   const handleVerify = async (e) => {
     e.preventDefault();
@@ -29,8 +32,7 @@ const Otp = () => {
       {/* LEFT SIDE */}
       <div className="relative w-full h-full overflow-hidden">
         <img
-          src="/src/assets/frontlogo.png"
-          alt="Background"
+          src={frontLogo} alt="Background"
           className="absolute inset-0 w-full h-full object-cover"
         />
 
@@ -42,8 +44,7 @@ const Otp = () => {
         <div className="relative z-10 flex items-center justify-center h-full">
           <div className="w-[260px] h-[360px] rounded-3xl overflow-hidden shadow-2xl">
             <img
-              src="/src/assets/backlogo.png"
-              alt="Runner"
+              src={backLogo} alt="Runner"
               className="w-full h-full object-cover object-[50%_15%]"
             />
             <div className="absolute bottom-4 w-full text-center text-white text-sm font-medium">
