@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../api";
+import frontLogo from "../assets/frontlogo.png";
+import backLogo from "../assets/backlogo.png";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -32,8 +34,7 @@ const Login = () => {
 
         {/* Background Image */}
         <img
-          src="/src/assets/frontlogo.png"
-          alt="Background"
+          src={frontLogo} alt="Background"
           className="absolute inset-0 w-full h-full object-cover"
         />
 
@@ -48,8 +49,7 @@ const Login = () => {
           <div className="w-[260px] h-[360px] rounded-3xl overflow-hidden shadow-2xl">
 
             <img
-              src="/src/assets/backlogo.png"
-              alt="Runner"
+              src={backLogo} alt="Runner"
               className="w-full h-full object-cover object-[50%_15%]"
             />
 
