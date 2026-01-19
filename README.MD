@@ -49,10 +49,6 @@ NewProject/
 
 ## 🚀 Getting Started (Local Setup)
 
-### 1️⃣ Clone the Repository
-```bash
-git clone https://github.com/your-username/product-management-app.git
-cd product-management-app
 
 2️⃣ Backend Setup
 cd server
@@ -62,14 +58,14 @@ npm install
 Create a .env file inside server/:
 
 PORT=5000
-MONGO_URI=mongodb+srv://example_db_user:ACyYzA4CwwDw2t0I@cluster0.sswfwbb.mongodb.net/?appName=Cluster0
+MONGO_URI=mongodb+srv://example_db_user:ACyYzA4CwwDw2t0I@cluster0.sswfwbb.mongodb.net/?appName=Cluster0(can change with your uri)
 JWT_SECRET=your_secret_key
 CLIENT_URL=http://localhost:3000
 
 EMAIL_SERVICE=smtp-relay.brevo.com
 
-EMAIL_USER=a046c1001@smtp-brevo.com
-EMAIL_PASS=xsmtpsib-7dae7225f50861b4f707c4ac1731b4b05f4f5612d40f2a0ccee5719e9e820db2-Kkm0GZwwNUPwzovi
+EMAIL_USER=Your useremail of brevo
+EMAIL_PASS=your bravo key
 
 Start backend:
 
